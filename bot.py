@@ -84,7 +84,7 @@ def test(message):
 
 @bot.message_handler(commands=['help'])
 def help(message):
-    s = ('/myqueue, /mq (нет аргумента) - узнать все свои очереди\n'
+    s = ('/mq (нет аргумента) - узнать все свои очереди\n'
          '/aq (нет аргумента) - узнать все очереди\n'
          '/make (название очереди) - сделать новую очередь\n'
          '/del (название очереди)- удалить Всю очередь\n'
@@ -135,11 +135,15 @@ def com3(message):
 def com4(message):
     qn = (message.text)[6:]
     if qn != "":
-        if ind(qn,queues) == 'net':
+        if ind(qn, queues) == 'net':
             make(qn)
-            write()
             s = 'сделал ' + qn
             bot.send_message(message.chat.id, s)
+            add(str(message.from_user.id), qn)
+            m = str(mpos(str(message.from_user.id), qn))
+            s = message.from_user.first_name + ' ' + m
+            write()
+            bot.send_message(message.chat.id, m)
         else:
             s = 'уже есть такая очередь'
             bot.send_message(message.chat.id, s)
@@ -164,7 +168,7 @@ def com6(message):
     try:
         mass = [[str(s[0])+' ',str(len(s)-1)] for s in queues]
         for i in range(len(mass)):
-            mass[i] = mass[i][0] + mass [i][1]
+            mass[i] = mass[i][0] + '|' + '{' + mass [i][1] + '}'
         s = "\n".join(mass)
         bot.send_message(message.chat.id, s)
     except:
